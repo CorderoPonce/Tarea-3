@@ -105,6 +105,27 @@ bool deleteList(List *l, HashMap *m, char *nombre){
   else return false;
 }
 
+void deletePrece(List *l, HashMap *m, char *nombre) {
+  for (Pair *a = firstMap(m) ; a != NULL ; a = nextMap(m)){
+    Tarea *casilla = a->value;
+    if (deleteList(casilla->precedencia, m, nombre) == true){
+      casilla->numPrecedentes--;
+      deleteList(l, m, casilla->nombre);
+      ListaEnOrden(l, m, casilla);
+    }
+  }
+}
+
+bool buscarRelacionPre(List *l, HashMap *m, char *nombre){
+  for (Pair *a = firstMap(m) ; a != NULL ; a = nextMap(m)){
+    Tarea *casilla = a->value;
+    for (char *b = first(casilla->precedencia) ; b != NULL ; b = next(casilla->precedencia)){
+      if (strcmp(b, nombre) == 0) return true;
+    }
+  }
+  return false;
+}
+
 void agregarTarea(List *l, HashMap *m){
   char nombre[31];
   puts("Ingrese el nombre de la tarea");
@@ -212,6 +233,53 @@ void mostrarTareas(List *l, HashMap *m){
   }
 }
 
+void marcarTarea(List *l, HashMap *m){
+  if (l->size == 0){
+    puts("* No se han registrado tareas");
+    return;
+  }
+
+  char nombre[31];
+  puts("Ingrese el nombre de la tarea completada");
+  scanf(" %[^\n]", nombre);
+
+  Tarea *casilla = searchMap(m, nombre);
+  if (casilla == NULL){
+    puts("* La tarea ingresada no existe!");
+    return;
+  }
+
+  if (casilla->numPrecedentes != 0 || buscarRelacionPre(l, m, casilla->nombre) == true){
+    int seleccion;
+    puts("¿Está seguro de eliminar la tarea? (1 sí | 2 no)");
+    scanf("%i", &seleccion);
+    while (seleccion > 2 || seleccion < 1){
+      puts("Ingrese un número válido");
+      puts("¿Está seguro de eliminar la tarea? (1 sí | 2 no)");
+      scanf("%i", &seleccion);
+    }
+
+    if (seleccion == 1){
+      deletePrece(l, m, nombre);
+      deleteList(l, m, nombre);
+      eraseMap(m, nombre);
+      puts("* La tarea ha sido eliminada");
+      return;
+    }
+    else{
+      puts("* La tarea NO ha sido eliminada");
+      return;
+    }
+  }
+  else {
+    deletePrece(l, m, nombre);
+    deleteList(l, m, nombre);
+    eraseMap(m, nombre);
+    puts("* La tarea ha sido eliminada");
+    return;
+  }
+}
+
 int main(){
   int num;
   List *l = createList();
@@ -249,7 +317,7 @@ int main(){
       mostrarTareas(l, m);
     }
     if (num == 4){
-      //marcarTarea(l, m);
+      marcarTarea(l, m);
     }
   }
 }
