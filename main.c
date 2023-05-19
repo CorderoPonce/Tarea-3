@@ -1,12 +1,12 @@
 #include "hashmap.h"
 #include "list.h"
-#include <assert.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <assert.h>
 #include <string.h>
 #include <ctype.h>
-#define BARRA "---------------------------------"
+#define BARRA "--------------------------------------"
 
 typedef struct Tarea{
   int prioridad;
@@ -17,7 +17,7 @@ typedef struct Tarea{
 
 void mostrarMenu(){
   puts(BARRA);
-  puts("        MENÚ DE OPCIONES");
+  puts("          MENÚ DE OPCIONES");
   puts(BARRA);
   printf("Seleccione una opción:\n\n1. Agregar tarea\n2. Ingresar tarea precedente\n3. Mostrar tareas\n4. Marcar tarea como completada\n0. Salir\n");
   puts(BARRA);
@@ -106,12 +106,20 @@ bool deleteList(List *l, HashMap *m, char *nombre){
 }
 
 void deletePrece(List *l, HashMap *m, char *nombre) {
-  for (Pair *a = firstMap(m) ; a != NULL ; a = nextMap(m)){
-    Tarea *casilla = a->value;
-    if (deleteList(casilla->precedencia, m, nombre) == true){
-      casilla->numPrecedentes--;
-      deleteList(l, m, casilla->nombre);
-      ListaEnOrden(l, m, casilla);
+  Tarea *casilla;
+  long current;
+
+  for (Pair *a = firstMap(m); a != NULL; a = nextMap(m)) {
+    current = m->current;
+    casilla = a->value;
+
+    if (casilla->numPrecedentes > 0) {
+      if (deleteList(casilla->precedencia, m, nombre) == true) {
+        casilla->numPrecedentes--;
+        deleteList(l, m, casilla->nombre);
+        ListaEnOrden(l, m, casilla);
+        m->current = current;
+      }
     }
   }
 }
@@ -171,7 +179,7 @@ void establecerPrecedencia(List *l, HashMap *m) {
     return;
   }
   if (l->size == 1){
-    puts("* Se ha ingresado sólo una tarea");
+    puts("* Se requieren de al menos dos tareas para esta funcionalidad (!)");
     return;
   }
   
@@ -183,7 +191,7 @@ void establecerPrecedencia(List *l, HashMap *m) {
   
   Tarea *casilla1 = searchMap(m, tarea1);
   if (casilla1 == NULL) {
-    puts("* La tarea ingresada no existe!");
+    puts("* La tarea ingresada no existe (!)");
     return;
   }
 
@@ -192,7 +200,7 @@ void establecerPrecedencia(List *l, HashMap *m) {
   
   Tarea *casilla2 = searchMap(m, tarea2);
   if (casilla2 == NULL) {
-    puts("* La tarea ingresada no existe!");
+    puts("* La tarea ingresada no existe (!)");
     return;
   }
   
@@ -200,6 +208,7 @@ void establecerPrecedencia(List *l, HashMap *m) {
   ListaEnOrden(casilla1->precedencia, m, casilla2);
   deleteList(l, m, casilla1->nombre);
   ListaEnOrden(l, m, casilla1);
+  puts("* Tarea precedente agregada con éxito");
 }
 
 void mostrarTareas(List *l, HashMap *m){
@@ -245,7 +254,7 @@ void marcarTarea(List *l, HashMap *m){
 
   Tarea *casilla = searchMap(m, nombre);
   if (casilla == NULL){
-    puts("* La tarea ingresada no existe!");
+    puts("* La tarea ingresada no existe (!)");
     return;
   }
 
@@ -280,6 +289,19 @@ void marcarTarea(List *l, HashMap *m){
   }
 }
 
+void mostrarLista(List *l){
+  for (char *a = first(l) ; a != NULL ; a = next(l)){
+    printf("%s\n", a);
+  }
+  printf("%i\n", l->size);
+}
+
+void mostrarMapa(HashMap *m){
+  for (Pair *a = firstMap(m) ; a != NULL ; a = nextMap(m)){
+      printf("%s: %i\n", a->key, ((Tarea *)a->value)->numPrecedentes);
+  }
+}
+
 int main(){
   int num;
   List *l = createList();
@@ -300,7 +322,7 @@ int main(){
 
     if (num == 0){
       puts(BARRA);
-      printf("        FIN DEL PROGRAMA\n");
+      printf("          FIN DEL PROGRAMA\n");
       puts(BARRA);
       free(m);
       return 0;
@@ -311,13 +333,18 @@ int main(){
     }
     if (num == 2){
       establecerPrecedencia(l, m);
-      puts("* Tarea precendete agragada con éxito");
     }
     if (num == 3){
       mostrarTareas(l, m);
     }
     if (num == 4){
       marcarTarea(l, m);
+    }
+    if (num == 5){
+      mostrarLista(l);
+    }
+    if (num == 6){
+      mostrarMapa(m);
     }
   }
 }
