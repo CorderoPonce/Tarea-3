@@ -45,6 +45,54 @@ int validarNombre(List *l, HashMap *m, char *nombre) {
   return 0;
 }
 
+void ListaEnOrden(List *l, HashMap *m, Tarea *n) {
+  if (l->size == 0) {
+    pushBack(l, n->nombre);
+    return;
+  }
+
+  void *current = first(l);
+  Tarea *c = searchMap(m, current);
+  
+  if (n->numPrecedentes > 0) { // SI TIENE PRECEDENCIA
+    while (current != NULL) {
+      if (c->numPrecedentes == n->numPrecedentes && n->prioridad <= c->prioridad) {
+        prev(l);
+        pushCurrent(l, n->nombre);
+        return;
+      }
+      else {
+        if (c->numPrecedentes > n->numPrecedentes) {
+        prev(l);
+        pushCurrent(l, n->nombre);
+        return;
+        }
+      }
+      current = next(l);
+      if (current != NULL) c = searchMap(m, current);
+    }
+    pushBack(l, n->nombre);
+  }
+  else { // SI NO TIENE PRECEDENCIA
+    if (n->prioridad <= c->prioridad &&  c->numPrecedentes == 0){
+    pushFront(l, n->nombre);
+    return;
+    }
+
+    while (current != NULL && c->prioridad < n->prioridad && c->numPrecedentes == 0) {
+      current = next(l);
+      if (current != NULL) c = searchMap(m, current);
+    }
+
+    if (current == NULL) {
+      pushBack(l, n->nombre);
+    } else {
+      prev(l);
+      pushCurrent(l, n->nombre);
+    } 
+  }
+}
+
 void agregarTarea(List *l, HashMap *m){
   char nombre[31];
   puts("Ingrese el nombre de la tarea");
@@ -81,7 +129,7 @@ void agregarTarea(List *l, HashMap *m){
   n->precedencia = createList();
 
   insertMap(m, n->nombre, n);
-  //ListaEnOrden(l, m, n);
+  ListaEnOrden(l, m, n);
 }
 
 int main(){
