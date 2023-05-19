@@ -181,6 +181,37 @@ void establecerPrecedencia(List *l, HashMap *m) {
   ListaEnOrden(l, m, casilla1);
 }
 
+void mostrarTareas(List *l, HashMap *m){
+  if (l->size == 0){
+    puts("* No se han registrado tareas");
+    return;
+  }
+  int cont = 1;
+
+  puts(BARRA);
+  puts("Lista de tareas ordenadas:\n");
+  for (char *a = first(l) ; a != NULL ; a = next(l)){
+    Tarea *casilla = searchMap(m, a);
+    
+    printf("%u. %s (Prioridad: %i)", cont, casilla->nombre, casilla->prioridad);
+
+    if (first(casilla->precedencia) != NULL){
+      char *b = first(casilla->precedencia);
+      char *compare = first(casilla->precedencia);
+      printf(" - Precedente: ");
+      while (b != NULL){
+        if (strcmp(b, compare) == 0){
+          printf("%s", b);
+        }
+        else printf(" - %s", b);
+        b = next(casilla->precedencia);
+      }  
+    }
+    printf("\n");
+    cont++;
+  }
+}
+
 int main(){
   int num;
   List *l = createList();
@@ -215,16 +246,10 @@ int main(){
       puts("* Tarea precendete agragada con éxito");
     }
     if (num == 3){
-      //mostrarTareas(l, m);
+      mostrarTareas(l, m);
     }
     if (num == 4){
       //marcarTarea(l, m);
-    }
-    if (num == 5){
-      //mostrarLista(l);
-    }
-    if (num == 6){
-      //mostrarMapa(m);
     }
   }
 }
