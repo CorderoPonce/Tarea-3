@@ -3,18 +3,11 @@
 #include <assert.h>
 #include "list.h"
 
-typedef struct n{
-    void* data;
-    struct n* next;
-    struct n* prev;
-} node;
-
-struct List{
-    node* first;
-    node* last;
-    node* current;
-    int size;
-};
+typedef struct Tarea{
+  int prioridad;
+  char nombre[30];
+  Tarea *precedencia;
+} Tarea;
 
 int get_size(List* list){
     return list->size;
@@ -112,15 +105,23 @@ void pushCurrent(List* list, void* data){
     list -> size++;
 }
 
-void popCurrent(List* list){
-    if(!list->current) return;
+void popCurrent(List* list) {
+    if (!list->current) return;
 
-    if (list->current->prev) list->current->prev->next=list->current->next;
-    if(list->current->next) list->current->next->prev=list->current->prev;
-    if(list->first==list->current) list->first=list->current->next;
-    if(list->last==list->current) list->last=list->current->prev;
-    free(list->current);
-    list -> size--; 
+    if (list->current->prev) list->current->prev->next = list->current->next;
+    if (list->current->next) list->current->next->prev = list->current->prev;
+    if (list->first == list->current) list->first = list->current->next;
+    if (list->last == list->current) list->last = list->current->prev;
+
+    node *temp = list->current;
+    list->current = list->current->next;
+
+    free(temp);
+    list->size--;
+    
+    if (list->first && !list->current) {
+        list->current = list->first;
+    }
 }
 
 

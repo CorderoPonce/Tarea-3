@@ -5,7 +5,22 @@
 #define _list_h
 
 typedef struct List List;
+typedef struct Tarea Tarea;
+typedef struct n node;
 typedef List Stack;
+
+struct List{
+    node* first;
+    node* last;
+    node* current;
+    int size;
+};
+
+typedef struct n{
+    void* data;
+    struct n* next;
+    struct n* prev;
+} node;
 
 /* list operations */
 
