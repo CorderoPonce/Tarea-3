@@ -93,6 +93,18 @@ void ListaEnOrden(List *l, HashMap *m, Tarea *n) {
   }
 }
 
+bool deleteList(List *l, HashMap *m, char *nombre){
+  bool elimino = false;
+  for (char *a = first(l) ; a != NULL ; a = next(l)){
+    if (strcmp(a, nombre) == 0){
+      popCurrent(l);
+      elimino = true;
+    }
+  }
+  if (elimino == true) return true;
+  else return false;
+}
+
 void agregarTarea(List *l, HashMap *m){
   char nombre[31];
   puts("Ingrese el nombre de la tarea");
@@ -132,6 +144,43 @@ void agregarTarea(List *l, HashMap *m){
   ListaEnOrden(l, m, n);
 }
 
+void establecerPrecedencia(List *l, HashMap *m) {
+  if (l->size == 0){
+    puts("* No se han registrado tareas");
+    return;
+  }
+  if (l->size == 1){
+    puts("* Se ha ingresado sólo una tarea");
+    return;
+  }
+  
+  char tarea1[31];
+  char tarea2[31];
+
+  puts("Ingrese la tarea a la que asignar:");
+  scanf(" %[^\n]", tarea1);
+  
+  Tarea *casilla1 = searchMap(m, tarea1);
+  if (casilla1 == NULL) {
+    puts("* La tarea ingresada no existe!");
+    return;
+  }
+
+  puts("Ingrese el nombre de la tarea precedente:");
+  scanf(" %[^\n]", tarea2);
+  
+  Tarea *casilla2 = searchMap(m, tarea2);
+  if (casilla2 == NULL) {
+    puts("* La tarea ingresada no existe!");
+    return;
+  }
+  
+  casilla1->numPrecedentes++;
+  ListaEnOrden(casilla1->precedencia, m, casilla2);
+  deleteList(l, m, casilla1->nombre);
+  ListaEnOrden(l, m, casilla1);
+}
+
 int main(){
   int num;
   List *l = createList();
@@ -162,7 +211,7 @@ int main(){
       puts("* Tarea agregada con éxito");
     }
     if (num == 2){
-      //establecerPrecedencia(l, m);
+      establecerPrecedencia(l, m);
       puts("* Tarea precendete agragada con éxito");
     }
     if (num == 3){
