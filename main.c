@@ -301,7 +301,7 @@ int main(){
 
     // Se escanea la opción ingresada por el usuario.
     scanf("%i", &num);
-    while (num > 6 || num < 0){ // Si el número de la opción ingresada se encuentra fuera del rango de opciones, se comienza un ciclo hasta que se ingrese un número válido.
+    while (num > 4 || num < 0){ // Si el número de la opción ingresada se encuentra fuera del rango de opciones, se comienza un ciclo hasta que se ingrese un número válido.
       printf("Ingrese un número válido\n");
       scanf("%i", &num);
     }
