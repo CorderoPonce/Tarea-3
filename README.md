@@ -12,7 +12,7 @@ PROBLEMAS U OBSERVACIONES: En cierto caso que no se logró determinar, la opció
 
 Aporte individual:
 
-Adolfo Cordero: Realización del código de manera individual.
+Adolfo Cordero: Realización del código de manera individual. Mejorar mentalidad.
 
 TABLA DE PUNTAJES
 
