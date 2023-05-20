@@ -304,10 +304,10 @@ int main(){
       enlarge(m);
     }
 
-    scanf("%i", &num);
-    while (num > 4 || num < 0){
-      printf("Ingrese un número válido\n");
-      scanf("%i", &num);
+    
+    while (scanf("%d", &num) != 1 || num > 4 || num < 0) { // Se comprueba que la opción ingresada sea válida.
+        puts("Ingrese un número válido");
+        while (getchar() != '\n');
     }
 
     if (num == 0){
