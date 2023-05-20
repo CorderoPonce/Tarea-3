@@ -31,30 +31,7 @@ int is_equal(void* key1, void* key2){
   if(strcmp((char*)key1,(char*)key2) == 0) return 1;
   return 0;
 }
- /*
-void insertMap(HashMap * map, char * key, void * value) {
 
-  unsigned short indice = hash(key, map->capacity);
-  if (map->buckets[indice] == NULL){
-    map->buckets[indice] = (Pair *) malloc (sizeof(Pair *));
-    map->buckets[indice]->key = key;
-    map->buckets[indice]->value = value;
-  }
-  else if (map->buckets[indice]->key == NULL){
-    map->buckets[indice]->key = key;
-    map->buckets[indice]->value = value;
-  }
-  else {
-    while (map->buckets[indice] != NULL && map->buckets[indice]->key != NULL)
-    {
-      indice = (indice + 1) % map->capacity;
-    }
-    map->buckets[indice] = (Pair *) malloc (sizeof(Pair *));
-    map->buckets[indice]->key = key;
-    map->buckets[indice]->value = value;
-  }
-  map->size++;
-}*/
 
 void insertMap(HashMap * map, void * key, void * value) {
   int pos = hash(key, map -> capacity);
@@ -135,21 +112,7 @@ void* searchMap(HashMap* map, void* key) {
 
   return NULL;
 }
-/*
-Pair * searchMap(HashMap * map,  char * key) {
-  int indice = hash(key, map->capacity);
-  map->current = indice;
 
-  if (map->buckets[indice] == NULL) return NULL;
-  else if (strcmp(map->buckets[indice]->key, key) != 0){
-    while (strcmp(map->buckets[indice]->key, key) != 0){
-      indice = (indice + 1) % map->capacity;
-      map->current = indice;
-      if (map->buckets[indice] == NULL) return NULL;
-    }
-  }
-  return map->buckets[indice];
-}*/
 
 Pair * firstMap(HashMap * map) {
   for (int i = 0 ; i < map->capacity ; i++){
