@@ -1,4 +1,4 @@
-# Tarea 3
+# Tarea 3: Lista de tareas organizadas
 
 El codigo principal está en el archivo "main.c".
 
