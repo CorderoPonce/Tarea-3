@@ -1,4 +1,4 @@
-# Tarea-3
+# Tarea 3
 
 El codigo principal está en el archivo "main.c".
 
