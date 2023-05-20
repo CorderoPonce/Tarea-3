@@ -51,33 +51,56 @@ int validarNombre(List *l, HashMap *m, char *nombre) { // Recibe la lista de nom
 
 // Esta función se encarga de ordenar los valores en las listas de nombres y de precedencia (aunque ambas almacenarán sólo datos de tipo char) según prioridad y cantidad de tareas precedentes.
 void ListaEnOrden(List *l, HashMap *m, Tarea *n) {
-  if (l->size == 0) { // Si la lista a la que se le quiere ingresar un nuevo dato está vacía, se ingresa el nombre de la tarea y se retorna.
+  if (l->size == 0) {
     pushBack(l, n->nombre);
     return;
   }
 
-  char *compare = first(l);
-  // Este for() se encarga de recorrer la lista a la que se le quiere ingresar un nuevo dato.
-  for (char *current = first(l) ; current != NULL ; current = next(l)){
-    Tarea * c = searchMap(m, current);
-    if (c->numPrecedentes > n->numPrecedentes && strcmp(c->nombre, compare) == 0){ // Si el número de tareas precedentes del dato que se recorre es mayor que el de la tarea que se quiere ingresar y además es el primer dato de la lista, se ingresa el dato al inicio.
-      pushFront(l, n->nombre);
-      return;
-    }
-    if (c->numPrecedentes > n->numPrecedentes){ // En caso de que el número de tareas precedentes de la tarea que está recorriendo el for sea mayor al de la nueva tarea que queremos ingresar, significa que nos pasamos de la posición en la que debería ingresarse, por lo que se vuelve una posición atrás con prev() y se ingresa el nombre de la nueva tarea en la posición con pushCurrent.
-      prev(l);
-      pushCurrent(l, n->nombre);
-      return;
-    }
-    if (c->numPrecedentes == n->numPrecedentes && c->prioridad >= n->prioridad){ // Si el número de tareas precedentes entre la nueva tarea y la tarea que está recorriendo el for son iguales y a su vez, la prioridad de la nueva tarea es menor o igual a la de la tarea que se esta recorriendo, se ingresa la nueva tarea en la posición.
-      prev(l);
-      pushCurrent(l, n->nombre);
-      return;
-    }
-  }
-  pushBack(l, n->nombre);
-}
+  void *current = first(l);
+  Tarea *c = searchMap(m, current);
 
+  // Si el nuevo dato tiene lista de precedencia.
+  if (n->numPrecedentes > 0) {
+    while (current != NULL) {
+      if (c->numPrecedentes == n->numPrecedentes && n->prioridad <= c->prioridad){ // Si el nuevo dato y el que se está recorriendo tienen la misma cantidad de tareas precedentes y el dato que se está recorriendo superó en prioridad o es igual es prioridad al nuevo, significa que nos pasamos de la posición en la que debería estar, por lo que se guarda en el nuevo dato en la posición anterior.
+        prev(l);
+        pushCurrent(l, n->nombre);
+        return;
+      }
+      else {
+        if (c->numPrecedentes > n->numPrecedentes){ // Si el nuevo dato tiene menos prioridad que el que se está recorriendo, se ingresa el dato en la posición previa.
+        prev(l);
+        pushCurrent(l, n->nombre);
+        return;
+        }
+      }
+      current = next(l);
+      if (current != NULL) c = searchMap(m, current);
+    }
+    pushBack(l, n->nombre);
+    return;
+  }
+  
+  // Si el nuevo dato no tiene lista de precedencia.
+  if (n->prioridad <= c->prioridad && c->numPrecedentes == 0){ // Si la prioridad del nuevo dato es menor que la del primero de la lista, se ingresa el nuevo dato al inicio de la lista.
+    pushFront(l, n->nombre);
+    return;
+  }
+
+  while (current != NULL && c->prioridad < n->prioridad && c->numPrecedentes == 0) { // Se recorre la lista hasta que se encuentre el final; la prioridad del dato que se esta recorriendo sea menor que la del nuevo dato o el número de tareas precedentes del dato que se está recorriendo sea mayor que 0. 
+    current = next(l);
+    if (current != NULL) c = searchMap(m, current);
+  }
+
+  if (current == NULL) {
+    pushBack(l, n->nombre);
+    return;
+  } else {
+    prev(l);
+    pushCurrent(l, n->nombre);
+    return;
+  } 
+}
 // Función que elimina un dato de una lista en base a la lista y nombre que recibe en el argumento.
 bool deleteList(List *l, HashMap *m, char *nombre){
   bool elimino = false; // Se crea el booleano elimino y se inicializa en false, éste indicará si durante el uso de la función se eliminó algún dato.
