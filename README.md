@@ -8,7 +8,7 @@ Funciones correctas: las 4 funciones se ejecutan de forma correcta en uso promed
 
 Herramientas: Repl.it, github.
 
-PROBLEMAS U OBSERVACIONES: En cierto caso que no se logró determinar, la opción de agregar tarea precedente se bloquea para un dato en específico, sin poder agregarle más tareas a ese único dato hasta que se actualiza alguno de los otros elementos. Esto no se pudo solucionar, ya que no se sabe por qué ocurre ni bajo que condiciones y es raro que suceda.
+Problemas: En cierto caso que no se logró determinar, la opción de agregar tarea precedente se bloquea para un dato en específico, sin poder agregarle más tareas a ese único dato hasta que se actualiza alguno de los otros elementos. Esto no se pudo solucionar, ya que no se sabe por qué ocurre ni bajo que condiciones y es raro que suceda.
 
 Aporte individual:
 
