@@ -16,6 +16,10 @@ typedef struct Tarea{
   int numPrecedentes; // Contador de tareas precedentes.
 } Tarea;
 
+
+void aaa(){
+  return;
+}
 // Función que muestra el menú de opciones.
 void mostrarMenu(){
   puts(BARRA);
